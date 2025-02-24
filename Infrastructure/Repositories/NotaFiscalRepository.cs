@@ -1,12 +1,10 @@
-﻿using Domain.Repositories;
-using NotaFiscal.API.Controllers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Models;
+using Domain.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using Domain.Models;
+using NotaFiscal.API.Controllers;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
@@ -19,20 +17,20 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public IDbContextTransaction BeginTransaction()
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
         {
-            return _context.Database.BeginTransaction();
+            return await _context.Database.BeginTransactionAsync();
         }
 
-        public void CriarNotaFiscal(NotasFiscal notaFiscal)
+        public async Task CriarNotaFiscalAsync(NotasFiscal notaFiscal)
         {
-            _context.notasfiscal.Add(notaFiscal);
-            _context.SaveChanges();
+            await _context.notasfiscal.AddAsync(notaFiscal);
+            await _context.SaveChangesAsync();
         }
 
-        public List<NotasFiscal> ObterNotasFiscais()
+        public async Task<List<NotasFiscal>> ObterNotasFiscaisAsync()
         {
-            return _context.notasfiscal.ToList();
+            return await _context.notasfiscal.ToListAsync();
         }
     }
 }

@@ -1,10 +1,8 @@
 ﻿using Domain.Models;
 using Domain.Repositories;
 using NotaFiscal.API.Controllers;
-using System;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
@@ -18,21 +16,20 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public void CriarFornecedor(Fornecedor fornecedor)
+        public async Task CriarFornecedorAsync(Fornecedor fornecedor)
         {
-            _context.fornecedor.Add(fornecedor);
-            _context.SaveChanges();
+            await _context.fornecedor.AddAsync(fornecedor);
+            await _context.SaveChangesAsync();
         }
 
-        public List<Fornecedor> ObterFornecedores()
+        public async Task<List<Fornecedor>> ObterFornecedoresAsync()
         {
-            return _context.fornecedor.ToList();
+            return await _context.fornecedor.ToListAsync();
         }
 
-        public Fornecedor ObterFornecedorPorId(int fornecedorId)
+        public async Task<Fornecedor> ObterFornecedorPorIdAsync(int fornecedorId)
         {
-            return _context.fornecedor.FirstOrDefault(f => f.Id == fornecedorId);
+            return await _context.fornecedor.FirstOrDefaultAsync(f => f.Id == fornecedorId);
         }
     }
-
 }

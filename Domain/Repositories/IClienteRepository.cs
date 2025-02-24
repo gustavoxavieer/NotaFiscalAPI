@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Domain.Models;
 
@@ -9,8 +6,8 @@ namespace Domain.Repositories
 {
     public interface IClienteRepository
     {
-        void CriarCliente(Cliente cliente);
-        Cliente ObterClientePorId(int id);
-        List<Cliente> ObterClientes();
+        Task CriarClienteAsync(Cliente cliente);
+        Task<Cliente> ObterClientePorIdAsync(int id);
+        Task<List<Cliente>> ObterClientesAsync();
     }
 }

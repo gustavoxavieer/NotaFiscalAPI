@@ -1,10 +1,8 @@
 ﻿using Domain.Models;
 using Domain.Repositories;
 using NotaFiscal.API.Controllers;
-using System;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
@@ -18,21 +16,20 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public void CriarCliente(Cliente cliente)
+        public async Task CriarClienteAsync(Cliente cliente)
         {
-            _context.cliente.Add(cliente);
-            _context.SaveChanges();
+            await _context.cliente.AddAsync(cliente);
+            await _context.SaveChangesAsync();
         }
 
-        public List<Cliente> ObterClientes()
+        public async Task<List<Cliente>> ObterClientesAsync()
         {
-            return _context.cliente.ToList();
+            return await _context.cliente.ToListAsync();
         }
 
-        public Cliente ObterClientePorId(int clienteId)
+        public async Task<Cliente> ObterClientePorIdAsync(int clienteId)
         {
-            return _context.cliente.FirstOrDefault(c => c.Id == clienteId);
+            return await _context.cliente.FirstOrDefaultAsync(c => c.Id == clienteId);
         }
     }
-
 }
