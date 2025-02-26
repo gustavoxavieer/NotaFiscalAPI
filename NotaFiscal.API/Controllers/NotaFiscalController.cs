@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Domain.Models;
 using NotaFiscal.API.Models;
+using NotaFiscal.API.Data;
 using Microsoft.EntityFrameworkCore;
+using System;
+using Domain.Models;
 
 namespace NotaFiscal.API.Controllers
 {
@@ -17,39 +19,44 @@ namespace NotaFiscal.API.Controllers
         }
 
         [HttpPost("CriarNotaFiscal")]
-        public IActionResult CriarNotaFiscal([FromBody] Domain.Models.NotasFiscal notaFiscal)
+        public IActionResult CriarNotaFiscal([FromBody] NotaFiscalDTO notaFiscalDto)
         {
-            using (var transaction = _context.Database.BeginTransaction())
+            try
             {
-                try
+                var clienteExistente = _context.cliente.FirstOrDefault(c => c.Nome == notaFiscalDto.Cliente.Nome);
+                if (clienteExistente == null)
                 {
-                    var clienteExistente = _context.cliente.FirstOrDefault(c => c.Nome == notaFiscal.Cliente.Nome);
-                    if (clienteExistente == null)
-                    {
-                        _context.cliente.Add(notaFiscal.Cliente);
-                        _context.SaveChanges();
-                    }
-
-                    var fornecedorExistente = _context.fornecedor.FirstOrDefault(f => f.Nome == notaFiscal.Fornecedor.Nome);
-                    if (fornecedorExistente == null)
-                    {
-                        _context.fornecedor.Add(notaFiscal.Fornecedor);
-                        _context.SaveChanges();
-                    }
-
-                    _context.notasfiscal.Add(notaFiscal);
-                    _context.SaveChanges();
-
-                    transaction.Commit();
-
-                    return Ok("Nota fiscal cadastrada com sucesso.");
+                    clienteExistente = new Cliente { Nome = notaFiscalDto.Cliente.Nome };
+                    _context.cliente.Add(clienteExistente);
+                    _context.SaveChanges();  
                 }
-                catch (Exception)
+
+                var fornecedorExistente = _context.fornecedor.FirstOrDefault(f => f.Nome == notaFiscalDto.Fornecedor.Nome);
+                if (fornecedorExistente == null)
                 {
-                    transaction.Rollback();
-                    return StatusCode(500, "Erro ao cadastrar a nota fiscal.");
+                    fornecedorExistente = new Fornecedor { Nome = notaFiscalDto.Fornecedor.Nome };
+                    _context.fornecedor.Add(fornecedorExistente);
+                    _context.SaveChanges();  
                 }
+
+                var novaNotaFiscal = new NotasFiscal
+                {
+                    NumeroNota = notaFiscalDto.NumeroNota,
+                    Valor = notaFiscalDto.Valor,
+                    ClienteId = clienteExistente.Id,  
+                    FornecedorId = fornecedorExistente.Id  
+                };
+
+                _context.notasfiscal.Add(novaNotaFiscal);
+                _context.SaveChanges();
+
+                return Ok("Nota fiscal cadastrada com sucesso.");
             }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Erro ao cadastrar a nota fiscal: {ex.Message}");
+            }
+
         }
 
         [HttpGet]
@@ -63,29 +70,27 @@ namespace NotaFiscal.API.Controllers
                     .ToList();
 
                 return Ok(notasFiscais);
-
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                var notasFiscais = _context.notasfiscal.ToList();
-                return Ok(notasFiscais);
+                return StatusCode(500, $"Erro ao obter notas fiscais: {ex.Message}");
             }
-
         }
 
         [HttpGet("Detalhes/{id}")]
         public IActionResult GetDetalhesNotaFiscal(int id)
         {
-
-
             var detalhesNotaFiscal = _context.notasfiscal
                 .Include(nf => nf.Cliente)
                 .Include(nf => nf.Fornecedor)
                 .FirstOrDefault(f => f.NumeroNota == id);
 
+            if (detalhesNotaFiscal == null)
+            {
+                return NotFound("Nota fiscal não encontrada.");
+            }
 
             return Ok(detalhesNotaFiscal);
         }
-
     }
 }

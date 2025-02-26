@@ -1,7 +1,7 @@
 ﻿using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Domain.Models;
-using NotaFiscal.API.Controllers;
+using NotaFiscal.API.Data;
 
 
 namespace Application

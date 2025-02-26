@@ -1,9 +1,9 @@
 ﻿using Domain.Models;
 using Domain.Repositories;
-using NotaFiscal.API.Controllers;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using NotaFiscal.API.Data;
 
 namespace Infrastructure.Repositories
 {

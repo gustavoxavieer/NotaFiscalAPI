@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace NotaFiscal.API.Models
 {
-    public class NotasFiscal
+    public class NotaFiscalDTO
     {
         [Key]
         [Column("numeronota")]

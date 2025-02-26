@@ -2,7 +2,7 @@
 using Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
-using NotaFiscal.API.Controllers;
+using NotaFiscal.API.Data;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 

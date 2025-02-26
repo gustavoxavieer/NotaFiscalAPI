@@ -3,6 +3,7 @@ using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using NotaFiscal.API.Controllers;
+using NotaFiscal.API.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
